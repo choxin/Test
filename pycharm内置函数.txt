@@ -1,0 +1,113 @@
+# -*- coding:gbk -*-
+'''示例5: 对带参数的函数进行装饰，
+内嵌包装函数的形参和返回值与原函数相同，装饰函数返回内嵌包装函数对象'''
+ 
+def deco(func):
+    def _deco(a, b):
+        print("before myfunc() called.")
+        ret = func(a, b)
+        print("  after myfunc() called. result: %s" % ret)
+        return ret
+    return _deco
+ 
+@deco
+def myfunc(a, b):
+    print(" myfunc(%s,%s) called." % (a, b))
+    return a + b
+ 
+myfunc(1, 2)
+myfunc(3, 4)
+
+
+
+函数首先赋值myfunc = _deco _deco 是有两个函数。，刚好调用_deco
+
+
+
+iter(o[, sentinel])	生成一个对象的迭代器，第二个参数表示分隔符
+max(iterable[, args...][key]) 	返回集合中的最大值
+min(iterable[, args...][key])	返回集合中的最小值
+dict([arg])	创建数据字典
+list([iterable]) 	将一个集合类转换为另外一个集合类
+set()	set对象实例化
+frozenset([iterable])	产生一个不可变的set
+str([object]) 	转换为string类型
+sorted(iterable[, cmp[, key[, reverse]]]) 	队集合排序
+tuple([iterable]) 	生成一个tuple类型
+
+
+callable(object)	检查对象object是否可调用
+					1、类是可以被调用的
+					2、实例是不可以被调用的，除非类中声明了__call__方法
+classmethod()		1、注解，用来说明这个方式是个类方法
+					2、类方法即可被类调用，也可以被实例调用
+					3、类方法类似于Java中的static方法
+					4、类方法中不需要有self参数
+
+dir([object])	1、不带参数时，返回当前范围内的变量、方法和定义的类型列表；
+				2、带参数时，返回参数的属性、方法列表。
+				3、如果参数包含方法__dir__()，该方法将被调用。当参数为实例时。
+				4、如果参数不包含__dir__()，该方法将最大限度地收集参数信息
+delattr(object, name)	删除object对象名为name的属性
+eval(expression [, globals [, locals]])	计算表达式expression的值
+
+getattr(object, name [, defalut])	获取一个类的属性
+globals()	返回一个描述当前全局符号表的字典
+hasattr(object, name)	判断对象object是否包含名为name的特性
+hash(object)	如果对象object为哈希表类型，返回对象object的哈希值
+id(object)	返回对象的唯一标识
+isinstance(object, classinfo)	判断object是否是class的实例
+issubclass(class, classinfo)	判断是否是子类
+len(s) 	返回集合长度
+locals() 	返回当前的变量列表
+map(function, iterable, ...) 	遍历每个元素，执行function操作
+memoryview(obj) 	返回一个内存镜像类型的对象
+next(iterator[, default]) 	类似于iterator.next()
+object() 	基类
+property([fget[, fset[, fdel[, doc]]]]) 	属性访问的包装类，设置后可以通过c.x=value等来访问setter和getter
+reduce(function, iterable[, initializer]) 	合并操作，从第一个开始是前两个参数，然后是前两个的结果与第三个合并进行处理，以此类推
+reload(module) 	重新加载模块
+setattr(object, name, value)	设置属性值
+repr(object) 	将一个对象变幻为可打印的格式
+slice（）	　
+staticmethod	声明静态方法，是个注解
+super(type[, object-or-type]) 	引用父类
+type(object)	返回该object的类型
+vars([object]) 	返回对象的变量，若无参数与dict()方法类似
+
+
+
+
+类的基础方法
+序号	目的	所编写代码	Python 实际调用
+①	初始化一个实例	x = MyClass()	x.__init__()
+②	字符串的“官方”表现形式	repr(x)	x.__repr__()
+③	字符串的“非正式”值	str(x)	x.__str__()
+④	字节数组的“非正式”值	bytes(x)	x.__bytes__()
+⑤	格式化字符串的值	format(x, format_spec)	x.__format__(format_spec)
+
+行为方式与迭代器类似的类
+序号	目的	所编写代码	Python 实际调用
+①	遍历某个序列	iter(seq)	seq.__iter__()
+②	从迭代器中获取下一个值	next(seq)	seq.__next__()
+③	按逆序创建一个迭代器	reversed(seq)	seq.__reversed__()
+
+计算属性
+序号	目的	所编写代码	Python 实际调用
+①	获取一个计算属性（无条件的）	x.my_property	x.__getattribute__('my_property')
+②	获取一个计算属性（后备）	x.my_property	x.__getattr__('my_property')
+③	设置某属性	x.my_property = value	x.__setattr__('my_property',value)
+④	删除某属性	del x.my_property	x.__delattr__('my_property')
+⑤	列出所有属性和方法	dir(x)	x.__dir__()
+
+
+
+序号	目的	所编写代码	Python 实际调用
+ 	序列的长度	len(seq)	seq.__len__()
+ 	了解某序列是否包含特定的值	x in seq	seq.__contains__(x)
+
+序号	目的	所编写代码	Python 实际调用
+ 	通过键来获取值	x[key]	x.__getitem__(key)
+ 	通过键来设置值	x[key] = value	x.__setitem__(key,value)
+ 	删除一个键值对	del x[key]	x.__delitem__(key)
+ 	为缺失键提供默认值	x[nonexistent_key]	x.__missing__(nonexistent_key)

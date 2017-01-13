@@ -1,0 +1,31 @@
+总结一下：
+
+进来的请求转入/hello/。
+Django 通过在 ROOT_URLCONF 配置来决定根 URLconf。
+Django 在 URLconf 中的所有 URL 模式中，查找第一个匹配 /hello/ 的条目。
+如果找到匹配，将调用相应的视图函数。
+视图函数返回一个 HttpResponse。
+Django 转换 HttpResponse 为一个适合的 HTTP response， 以 Web page 显示出来。
+
+
+
+因为python3不再支持mysqldb，所以用了pymysql。
+
+pip install pymysql  
+然后在项目中的__init__.py 文件中加入下列代码
+
+import pymysql  
+pymysql.install_as_MySQLdb()  
+
+然后就可以正常使用了。settings.py中的数据库信息不需要更改。
+
+
+
+解决方法：
+首先，删除interface/migrations文件夹中的所有相关migrate文件（我当时只留下了__init__.py文件）。然后，删除mysql中的django_migrations表中的与interface相关的记录（特别是初始化那条。不删那条还是没用。）
+最后，重新运行python manage.py makemigrations与python manage.py migrate。问题应该可以解决了:)
+
+
+
+
+python manage.py sqlmigrate accountApp 0002

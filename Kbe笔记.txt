@@ -1,0 +1,96 @@
+1、STRING			N
+	UNICODE			N 中文
+
+	string和wstring的区别
+2、唯一的Entity ID，Cell,Base,Client共用一个id
+
+3、eventprofile – 诊断出消耗最大的方法调用和状态更新。
+	networkprofile – 诊断出占用带宽最大的消息。
+	pyprofile – 诊断出消耗cpu时间最多的python函数调用。
+	cprofile – 诊断出消耗cpu时间最多的引擎的c++函数调用
+
+4、Baseapp进程，客户端与Cellapp通信的中介
+
+5、Mailbox对象在C++底层实现非常简单，它只包含了实体的ID、目的地的地址、实体类型、Mailbox类型。
+	当用户请求一次远程交互时，底层首先能够通过实体类型找到实体定义的描述，
+	通过实体定义的描述对用户输入的数据进行检查，如果检查合法那么底层将数据打包并发往目的地，
+	目的地进程根据协议进行解包最终调用到脚本层。
+
+
+6、witness就是客户端的一个cell代理，cellapp将AOI内的信息不断的通过Witness同步给客户端
+
+7、KBE第三方登录和计费的主要思想是， 客户端登录或者请求服务端计费接口， 客户端请求到baseapp， baseapp将请求直接交给dbmgr处理， dbmgr发现配置为第三方登录于是将请求转发给interfaces， interfaces将登录或者计费请求包含参数提交给第三方服务器，第三方服务器同步返回或者异步回调给interfaces， interfaces将结果返回给dbmngr， dbmgr将结果交还给baseapp， baseapp告诉客户端成功与否。
+
+
+
+
+8、
+	1：客户单请求登陆， 设置为第三方登陆，这个请求会送到interfaces下， 此时你可以直接转交给豌豆荚去拿到token
+	2：豌豆荚返回数据到interfaces下， interfaces会将返回送给dbmgr， dbmgr正常走登陆流程， dbmgr发现没有账号则自动创建一个KBE账号并登陆， 发现有账号就登陆了。
+
+
+9、启动之后广播自己的位置给machine（Components::process()）。然后广播请求自己的需要的组件类型（Components::findComponents()），machine收到之后广播
+
+	Component 持有Network::Channel* pChannel; 就是socket链接  Components::connectComponent 生成socket链接
+
+
+10、onRemoteMethodCall_  服务端调用客户端方法
+
+11、MessageHandler 处理消息 
+	
+
+12、热更新脚本 KBEngine.reloadScript()
+
+13、# 查找路径 默认搜索到当前路径，如果更深则加上包名 from xxxx import
+
+14、GuiConsole不支持中文输出 string接受
+
+15、globalData 只能更新顶层的值，当时对象的时候要么是引用或者mailbox
+
+
+16、读取地址res = r"scripts\data\spawnpoints\%s_spawnpoints.xml" % (self.spaceResName.replace("\\", "/").split("/")[-1])
+		if(len(self.spaceResName) == 0 or not KBEngine.hasRes(res)):
+			return
+			
+		res = KBEngine.getResFullPath(res)
+
+
+17、 pycharm 提示 https://github.com/kbengine/kbengine/issues/142
+
+
+18、python ElementTree root 的数据类型
+
+		　tag：string，元素代表的数据种类。
+	# 　　text：string，元素的内容。
+	# 　　tail：string，元素的尾形。
+	# 　　attrib：dictionary，元素的属性字典。
+	# 　　
+	# 　　＃针对属性的操作
+	# 　　clear()：清空元素的后代、属性、text和tail也设置为None。
+	# 　　get(key, default=None)：获取key对应的属性值，如该属性不存在则返回default值。
+	# 　　items()：根据属性字典返回一个列表，列表元素为(key, value）。
+	# 　　keys()：返回包含所有元素属性键的列表。
+	# 　　set(key, value)：设置新的属性键与值。
+http://www.cnblogs.com/ifantastic/archive/2013/04/12/3017110.html
+
+19、神奇方法  https://www.oschina.net/question/253614_115412
+
+20、假设一共有3个客户端连接到服务器端。那么在服务器端就一共有4个套接字：第1个是socket()返回的、用于监听的套接字；其余3个是分别调用3次accept()返回的不同的套接字。
+
+	socket 监听端口。如果有链接，则新生成一个连接，一个连接记了客户端的ip和端口，则客户端发来消息的时候直接通信
+
+	listen函数用于将某个socket置于监听模式，只要将listen函数调用一次，则这个socket就会不断地进行监听。accept则是用于按照顺序提取用于监听的socket所监听到的连接请求，将相应的端口以及通信地址赋值给相应的用于通信的socket完成通信的。
+21、epoll 注册 句柄和感性的事件到内核。内核收到事件之后触发通知epoll，epoll转给对应的连接
+
+
+22、
+因为客户端可以直接调用cellapp上其他entity的方法， 那么方法到cellapp上直接在目标entity身上触发， 此时就需要在暴露的方法第一个参数判断调用者。
+比如在客户端呼唤NPC购买功能， 服务器逻辑应该允许这么做， 但是客户端调用其他玩家实体释放技能， 此时肯定不合法， 这样就有个判断依据。
+而客户端无法访问其他的baseapp上的entity， 客户端只有一个baseentity，就是自己的。
+
+
+23、xlxs2py可以把xlsx转换成python，放在data目录下，会被服务器加载进内存，如果配置表很大，有没有优化方案？
+配置表很大可能会在import时较慢， 你可以写工具将其拆分，分次import。
+也可以将其转为很多xml文件分次读取。
+24、
+cellapp发给baseapp，baseapp转发一下就行了
